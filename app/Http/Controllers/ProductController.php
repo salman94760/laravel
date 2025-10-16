@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
@@ -23,14 +24,18 @@ class ProductController extends Controller
         }    
     }
 
-   public function store(Request $request)
-   {
-    // echo "<pre>";print_r($request->all());die;
-    // echo "<pre>";print_r($_FILES);die;
+   public function store(Request $request){
+    if (!User::where('email', $request->useremail)->exists()) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'User not found'
+        ], 400);
+    }
+    
+
     $validator = Validator::make($request->all(), [
         'name'        => 'required|string|max:255',
         'description' => 'required|string',
-        // 'image'       => 'required|image|mimes:jpg,jpeg,png,gif',
     ]);
 
     if ($validator->fails()) {
@@ -68,12 +73,6 @@ class ProductController extends Controller
         $imageName = time().'.'.$request->image->extension();
         $request->image->move(public_path('uploads'), $imageName);
         $validated['image'] = 'uploads/'.$imageName;
-    }else{
-       return response()->json([
-            'data' =>$request->hasFile('image'),
-                'status' => 'error',
-                'message' => 'Uploaded file is not valid ss'
-            ], 400); 
     }
 
     
