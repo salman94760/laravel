@@ -18,7 +18,7 @@ class ProductController extends Controller
         $data = $this->Product::all();
 
         if ($data->isEmpty()) {
-            return response()->json(['data'=>'','message' => 'No products found'], 404);
+            return response()->json(['data'=>[],'message' => 'No products found'], 404);
         } else {
             return response()->json(['data'=>$data,'message' => 'products found'], 200);
         }    
