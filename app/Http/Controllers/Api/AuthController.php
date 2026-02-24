@@ -38,8 +38,9 @@ class AuthController extends Controller
         if($user->id){
             UsersInfo::create([
                 'userId'        => $user->id,
+                'role'          => $request->role,
                 'fullname'      => $request->fullname,
-                'address'       => $request->address,
+                'address'       => $request->address??'',
                 'phone'         => $request->phone,
                 'passwordhint'  => $password,
                 'zipcode'       => '',
@@ -49,6 +50,7 @@ class AuthController extends Controller
 
         // Optional: password user ko wapas bhejna response mein
         return response()->json([
+            'status'=>200,
             'message' => 'User registered successfully',
             'user' => $user,
             'password' => $password,  // client ko batana hoga ki ye password use kare
